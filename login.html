@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StockSense · Log in</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-body">
+<div class="auth-card">
+  <div class="auth-brand"><span class="brand-mark">◆</span> StockSense</div>
+  <p class="auth-tag">Inventory, without the spreadsheet.</p>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}<div class="flash">{{ messages[0] }}</div>{% endif %}
+  {% endwith %}
+  <form method="POST">
+    <label>Username</label>
+    <input type="text" name="username" required autofocus>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button type="submit">Log in</button>
+  </form>
+  <div class="auth-links">
+    <a href="{{ url_for('reset_password') }}">Forgot password?</a>
+    <a href="{{ url_for('signup') }}">Create an account</a>
+  </div>
+</div>
+</body>
+</html>

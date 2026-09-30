@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+<p class="subtitle">A snapshot of everything happening in your inventory.</p>
+
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="kpi-label">Total products</div>
+    <div class="kpi-value">{{ total_products }}</div>
+  </div>
+  <div class="kpi-card {{ 'kpi-warn' if low_stock }}">
+    <div class="kpi-label">Low / out of stock</div>
+    <div class="kpi-value">{{ low_stock|length }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Receipts logged</div>
+    <div class="kpi-value">{{ action_counts.get('receipt', 0) }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Deliveries logged</div>
+    <div class="kpi-value">{{ action_counts.get('delivery', 0) }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Transfers logged</div>
+    <div class="kpi-value">{{ action_counts.get('transfer', 0) }}</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Adjustments logged</div>
+    <div class="kpi-value">{{ action_counts.get('adjustment', 0) }}</div>
+  </div>
+</div>
+
+<div class="two-col">
+  <div class="panel">
+    <h2>Low stock alerts</h2>
+    {% if low_stock %}
+    <table>
+      <thead><tr><th>Product</th><th>Current qty</th><th>Reorder level</th></tr></thead>
+      <tbody>
+        {% for item in low_stock %}
+        <tr><td>{{ item.name }}</td><td>{{ item.qty }}</td><td>{{ item.reorder_level }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">Nothing is low on stock right now.</p>
+    {% endif %}
+  </div>
+
+  <div class="panel">
+    <h2>Recent activity</h2>
+    {% if recent %}
+    <table>
+      <thead><tr><th>Type</th><th>Product</th><th>Change</th><th>When</th></tr></thead>
+      <tbody>
+        {% for r in recent %}
+        <tr>
+          <td><span class="tag tag-{{ r.action_type }}">{{ r.action_type }}</span></td>
+          <td>{{ r.product_name }}</td>
+          <td class="{{ 'pos' if r.quantity_change > 0 else 'neg' if r.quantity_change < 0 else '' }}">{{ '%+d'|format(r.quantity_change) }}</td>
+          <td>{{ r.timestamp }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No stock movements yet — try recording a receipt.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
